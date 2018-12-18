@@ -6,7 +6,7 @@ Pipelines provide a well-defined, repeatable way to continuously push changes to
 ## Stage Triggers
 These are events on which a stage condition evaluation would start. The execution flow of stages is very much similar to that of [job](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#job). I will take the example of a ring based geographic deployment to explain the basic flow. 
 
-![IMG: Ring based deployment](https://github.com/zenithworks/azure-pipelines-yaml/blob/master/capture20181218115033741.png)
+![IMG: Ring based deployment](https://github.com/zenithworks/azure-yaml/blob/master/capture20181218115033741.png)
 
 #### 1. On Pipeline Trigger:
 *Eg. I want to begin  'Dev' stage execution as soon as a new run is triggered*
