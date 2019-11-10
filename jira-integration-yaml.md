@@ -120,3 +120,9 @@ integrations:
   - environment: East-US
     type: production
 ```
+
+Scenarios:
+- CI only pipeline( only build jobs ) 
+- Multi config pipeline(builds for linux and windows)
+- Deployment strategies
+- 
