@@ -48,7 +48,7 @@ For the API, the combination of `pipelineId` (pipeline definition identifier), `
 
 
 #### When should the data be pushed from Azure Pipelines:?
- Since build generation and deployments are done at a job level in azure pipelines, we'll push the status information to Jira at job boundaries. For deployments, azure pipelines already has a separate category of jobs, viz, deployment jobs. We'll invoke deployment APIs at the beginning and end of deployment jobs if all the filter conditions are met. For builds, however, we currently do not have a separate category of jobs. For this, we will assume that any job that publishes an artifact is a build job. We'll invoke build API at the end of these jobs if filter conditions are met.  
+ Based on customer interactions, they would prefer seeing the build status as soon as a build completes and deployment status when deployment to an environment is complete. Since build generation and deployments are done at a job level in azure pipelines, we'll push the status information to Jira at job boundaries. For deployments, azure pipelines already has a separate category of jobs, viz, deployment jobs. We'll invoke deployment APIs at the beginning and end of deployment jobs if all the filter conditions are met. For builds, however, we currently do not have a separate category of jobs. For this, we will assume that any job that publishes an artifact is a build job. We'll invoke build API at the end of these jobs if filter conditions are met.  
 
 
 
@@ -62,17 +62,16 @@ Since traceability primarily involves interacting with external systems, we prop
 
 ```yaml
 integrations:       
-  integration: myJiraCloud # name of integration; mandatory;  
-  type: 'jira' # type of integration; mandatory;  
+- integration: jira # name of integration; mandatory;    
   connection: string # service connection to JIRA cloud; mandatory;
-  resources: # resource filters. commits only in  these resources will checked for linked JIRA issues. Job status will be posted to JIRA for these issues; optional; defaults to all resources
+  resources: # resource filters. Status will be posted to JIRA for issues that are linked to these resources only; optional; defaults to all resources
   - resource: string # identifier for the resource;  
     branches: 
       include: [ string ] # optional; defaults to all branches.
       exclude: [ string ] # optional; defaults to none
-  environments: # environment filters. Status of deployments to only to these environments will be  posted to JIRA; defaults to all environments
+  environments: # environment filters. Status of deployments to only these environments will be  posted to JIRA; defaults to all environments
   - environment: string #name of environment
-    type: string #environment type based on Atlassian categorization(Eg, production, staging etc). Defaults to unmapped.    
+    type: string #environment type based on Atlassian's categorization of environment(Eg, production, staging etc). Defaults to unmapped.    
 ```
 
 <br/>
@@ -81,44 +80,43 @@ integrations:
 
 ### Examples:
 
-Day-1 configuration: The following yaml snippet is the simplest configuration and eliminates all optional fields. The job status will be posted back to JIRA server for all branches of all resources consumed in any stage
+Day-1 configuration: The following yaml snippet is the simplest configuration and eliminates all optional fields. The status will be posted back to JIRA server for all branches of all resources consumed in any environment
 
 ```yaml
 integrations:       
-  integration: jira 
-  - connection: myJiraServiceConnection 
+- integration: jira 
+  connection: myJiraServiceConnection 
 ```
 
 <br/>
 <br/>
 
-The following configuration will send job status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource from `releases/*` branch only. 
+The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource from `releases/*` branch only. 
 
 ```yaml
 integrations:       
-  integration: jira 
-  - connection: myJiraServiceConnection 
-    resources: 
-    - resource: zenithWorks-kernel 
-      branches:
-        include: releases/*   
+- integration: jira 
+  connection: myJiraServiceConnection 
+  resources: 
+  - resource: zenithWorks-kernel 
+    branches:
+      include: releases/*   
 ```
 
-
-
 <br/>
 <br/>
 
-The following configuration will send job status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource from `releases/*` branch. The status will be posted for all build and deploy jobs  within `build` and `production` stages only.
+The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource. The deployment status will be posted when the resource is deployed to `Stage-US` and `East-US` environments only.
 
 ```yaml
 integrations:       
-  integration: jira 
-  - connection: myJiraServiceConnection 
-    resources: 
-    - resource: zenithWorks-kernel    
-    stages: 
-    - build
-    - production     
-    environmentType: '{"stage-US":"staging"; "East-US": "production";}' 
+- integration: jira 
+  connection: myJiraServiceConnection 
+  resources: 
+  - resource: zenithWorks-kernel           
+  environments: 
+  - environment: Stage-US
+    type: staging
+  - environment: East-US
+    type: production
 ```
