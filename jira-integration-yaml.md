@@ -65,10 +65,18 @@ integrations:
 - integration: jira # name of integration; mandatory;    
   connection: string # service connection to JIRA cloud; mandatory;
   resources: # resource filters. Status will be posted to JIRA for issues that are linked to these resources only; optional; defaults to all resources
-  - resource: string # identifier for the resource;  
+  - repository: string #  identifier of the repository resource as defined in YAML resources section
     branches: 
       include: [ string ] # optional; defaults to all branches.
-      exclude: [ string ] # optional; defaults to none
+      exclude: [ string ] # optional; 
+  - pipeline: string #  identifier of the pipeline resource as defined in YAML resources section
+    branches:
+      include: [ string ]  # optional; defaults to all branches.
+      exclude: [ string ]  # optional;
+  - container: string #  identifier of the container resource as defined in YAML resources section
+    tags:
+      include: [ string ] # optional; defaults to all tags
+      exclude: [ string ] # optional
   environments: # environment filters. Status of deployments to only these environments will be  posted to JIRA; defaults to all environments
   - environment: string #name of environment
     type: string #environment type based on Atlassian's categorization of environment(Eg, production, staging etc). Defaults to unmapped.    
@@ -91,20 +99,36 @@ integrations:
 <br/>
 <br/>
 
-The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource from `releases/*` branch only. 
+The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` repository resource from `releases/*` branch only. 
 
 ```yaml
 integrations:       
 - integration: jira 
   connection: myJiraServiceConnection 
   resources: 
-  - resource: zenithWorks-kernel 
+  - repository: zenithWorks-kernel 
     branches:
       include: releases/*   
 ```
 
 <br/>
 <br/>
+
+The following configuration will post status to JIRA for images from `zenithworksImageRegistry` container registry that are tagged with `prod-ready`
+
+```yaml
+integrations:       
+- integration: jira 
+  connection: myJiraServiceConnection 
+  resources: 
+  - container: zenithworksImageRegistry
+    tags:
+      include: prod-ready  
+```
+
+<br/>
+<br/>
+
 
 The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource. The deployment status will be posted when the resource is deployed to `Stage-US` and `East-US` environments only.
 
@@ -113,7 +137,7 @@ integrations:
 - integration: jira 
   connection: myJiraServiceConnection 
   resources: 
-  - resource: zenithWorks-kernel           
+  - repository: zenithWorks-kernel           
   environments: 
   - environment: Stage-US
     type: staging
@@ -122,7 +146,9 @@ integrations:
 ```
 
 Scenarios:
+- for different resource types
 - CI only pipeline( only build jobs ) 
 - Multi config pipeline(builds for linux and windows)
+- Multiple jobs targetting a resource in environment
 - Deployment strategies
 - 
