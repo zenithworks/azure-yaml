@@ -62,15 +62,17 @@ Since traceability primarily involves interacting with external systems, we prop
 
 ```yaml
 integrations:       
-  integration: jira # identifier of integration; mandatory;  
-  - connection: string # service connection to JIRA cloud; mandatory;
-    resources: # resource filters. commits only in  these resources will checked for linked JIRA issues. Job status will be posted to JIRA for these issues; optional; defaults to all resources
-    - resource: string # identifier for the resource;  
-      branches: 
-        include: [ string ] # optional; defaults to all branches.
-        exclude: [ string ] # optional; defaults to none
-    stages: [ string ]  # stage filters. Status of all build/deploy jobs in these stages will be posted to JIRA; optional; Defaults to all stages. 
-    environmentType: [ string ] # Environment type mapping as supported by JIRA; optional; By default all environments map to "unmapped" category;
+  integration: myJiraCloud # name of integration; mandatory;  
+  type: 'jira' # type of integration; mandatory;  
+  connection: string # service connection to JIRA cloud; mandatory;
+  resources: # resource filters. commits only in  these resources will checked for linked JIRA issues. Job status will be posted to JIRA for these issues; optional; defaults to all resources
+  - resource: string # identifier for the resource;  
+    branches: 
+      include: [ string ] # optional; defaults to all branches.
+      exclude: [ string ] # optional; defaults to none
+  environments: # environment filters. Status of deployments to only to these environments will be  posted to JIRA; defaults to all environments
+  - environment: string #name of environment
+    type: string #environment type based on Atlassian categorization(Eg, production, staging etc). Defaults to unmapped.    
 ```
 
 <br/>
