@@ -48,7 +48,7 @@ For the API, the combination of `pipelineId` (pipeline definition identifier), `
 
 
 #### When should the data be pushed from Azure Pipelines:?
- Based on customer interactions, they would prefer seeing the build status as soon as a build completes and deployment status when deployment to an environment is complete. Since build generation and deployments are done at a job level in azure pipelines, we'll push the status information to Jira at job boundaries. For deployments, azure pipelines already has a separate category of jobs, viz, deployment jobs. We'll invoke deployment APIs at the beginning and end of deployment jobs if all the filter conditions are met. For builds, however, we currently do not have a separate category of jobs. For this, we will assume that any job that publishes an artifact is a build job. We'll invoke build API at the end of these jobs if filter conditions are met.  
+ Based on customer interactions, customers prefer seeing the build status as soon as a build completes and deployment status when deployment to an environment is complete. Since build generation and deployments are done at a job level in azure pipelines, we'll push the status information to Jira at job boundaries. For deployments, azure pipelines already has a separate category of jobs, viz, deployment jobs. We'll invoke deployment APIs at the beginning and end of deployment jobs if all the filter conditions are met. For builds, however, we currently do not have a separate category of jobs. For this, we will assume that any job that publishes an artifact is a build job. We'll invoke build API at the end of these jobs if filter conditions are met.  
 
 
 
@@ -145,10 +145,3 @@ integrations:
     type: production
 ```
 
-Scenarios:
-- for different resource types
-- CI only pipeline( only build jobs ) 
-- Multi config pipeline(builds for linux and windows)
-- Multiple jobs targetting a resource in environment
-- Deployment strategies
-- 
