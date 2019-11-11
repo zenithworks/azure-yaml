@@ -76,7 +76,7 @@ integrations:
   - container: string #  identifier of the container resource as defined in YAML resources section
     tags:
       include: [ string ] # optional; defaults to all tags
-      exclude: [ string ] # optional
+      exclude: [ string ] # optional;
   environments: # environment filters. Status of deployments to only these environments will be  posted to JIRA; defaults to all environments
   - environment: string #name of environment
     type: string #environment type based on Atlassian's categorization of environment(Eg, production, staging etc). Defaults to unmapped.    
@@ -108,7 +108,8 @@ integrations:
   resources: 
   - repository: zenithWorks-kernel 
     branches:
-      include: releases/*   
+      include: 
+      - releases/*   
 ```
 
 <br/>
@@ -123,21 +124,24 @@ integrations:
   resources: 
   - container: zenithworksImageRegistry
     tags:
-      include: prod-ready  
+      include: 
+      - prod-ready  
 ```
 
 <br/>
 <br/>
 
 
-The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource. The deployment status will be posted when the resource is deployed to `Stage-US` and `East-US` environments only.
+The following configuration will send status to all JIRA WITs linked in the commits of `zenithWorks-kernel` resource. The deployment status will be posted when the resource from `releases/*` branch is deployed to `Stage-US` and `East-US` environments only.
 
 ```yaml
 integrations:       
 - integration: jira 
   connection: myJiraServiceConnection 
   resources: 
-  - repository: zenithWorks-kernel           
+  - repository: zenithWorks-kernel
+    branches:
+    - releases/*
   environments: 
   - environment: Stage-US
     type: staging
