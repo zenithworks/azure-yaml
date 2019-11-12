@@ -1,0 +1,85 @@
+resources:         
+  repositories:
+  - repository: zenithWorksGitHubRepo      
+    type: GitHub
+    connection: githubServiceConnection
+    source: zenithworks/core   
+  containers:
+  - container: zenithworksImageRegistry
+    type: ACR
+    subscription: RMPM
+    image: kernel 
+
+
+stages:
+- stage: build  
+  displayName: Build stage
+  jobs:  
+  - job: Build
+    displayName: Build job
+    steps:
+    - script: | 
+        echo build starting...
+        echo build completed.      
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'    
+
+
+- stage: test
+  dependsOn: build
+  jobs:
+  - job: 
+    ...
+
+
+- stage: deploy  
+  dependsOn: test
+  jobs:
+  - deployment: deployToDev  
+    environment: 'dev-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment  
+  - deployment: deployToStage
+    dependsOn: deployToDev    
+    environment: 'stage-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment     
+  - deployment: deployToProd   
+    dependsOn: deployToStage 
+    environment: 'East-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment 
+
+
+integrations:       
+- integration: jira 
+  connection: myJiraServiceConnection 
+  resources: 
+  - repository: zenithWorksGitHubRepo
+    branches:
+    - releases/*
+  - container: zenithworksImageRegistry
+    tags:
+    - prod-ready*
+  environments: 
+  - environment: Stage-US
+    type: staging
+  - environment: East-US
+    type: production
+
+
+    
