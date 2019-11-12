@@ -1,0 +1,51 @@
+resources:           
+  containers:
+  - container: zenithworksImageRegistry
+    type: ACR
+    subscription: RMPM
+    image: kernel 
+
+
+- stage: deploy  
+  dependsOn: test
+  jobs:
+  - deployment: deployToTest 
+    environment: 'Test-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment  
+  - deployment: deployToStage
+    dependsOn: deployToDev    
+    environment: 'Stage-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment     
+  - deployment: deployToProd   
+    dependsOn: deployToStage 
+    environment: 'Prod-US'
+    strategy:
+      runOnce:
+        deploy:
+          steps:           
+          - powershell: Write-Host "running deployment steps"
+            displayName: Run Deployment 
+
+
+integrations:       
+- integration: jira 
+  connection: myJiraServiceConnection 
+  resources: 
+  - container: zenithworksImageRegistry
+    tags:
+    - prod-ready*
+  environments: 
+  - environment: Stage-US
+    type: staging
+  - environment: Prod-US
+    type: production
