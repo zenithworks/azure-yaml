@@ -38,7 +38,7 @@ stages:
   dependsOn: test
   jobs:
   - deployment: deployToTest 
-    environment: 'test-US'
+    environment: 'Test-US'
     strategy:
       runOnce:
         deploy:
@@ -47,7 +47,7 @@ stages:
             displayName: Run Deployment  
   - deployment: deployToStage
     dependsOn: deployToDev    
-    environment: 'stage-US'
+    environment: 'Stage-US'
     strategy:
       runOnce:
         deploy:
@@ -56,7 +56,7 @@ stages:
             displayName: Run Deployment     
   - deployment: deployToProd   
     dependsOn: deployToStage 
-    environment: 'East-US'
+    environment: 'Prod-US'
     strategy:
       runOnce:
         deploy:
@@ -78,7 +78,7 @@ integrations:
   environments: 
   - environment: Stage-US
     type: staging
-  - environment: East-US
+  - environment: Prod-US
     type: production
 
 
