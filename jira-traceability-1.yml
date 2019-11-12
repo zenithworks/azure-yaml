@@ -37,8 +37,8 @@ stages:
 - stage: deploy  
   dependsOn: test
   jobs:
-  - deployment: deployToDev  
-    environment: 'dev-US'
+  - deployment: deployToTest 
+    environment: 'test-US'
     strategy:
       runOnce:
         deploy:
